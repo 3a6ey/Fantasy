@@ -339,29 +339,57 @@ print(("Passed: %d / %d tests"):format(passedTests, #TEST_RESULTS))
 divider("-", 50)
 
 -- ========================================================
-header("📦 LOADING ADONIS (Optional)")
+header("📦 LOADING ADONIS BYPASS")
 -- ========================================================
 
 local adonisUrl = "https://raw.githubusercontent.com/3a6ey/testadonis/refs/heads/main/test.lua"
-local rawCode
+local adonisCode
 
-step("Download source (HttpGet)", function()
-    rawCode = game:HttpGet(adonisUrl)
-    assert(type(rawCode) == "string" and #rawCode > 0, "empty response")
-    print(("   %d bytes received"):format(#rawCode))
+step("Download Adonis Bypass", function()
+    adonisCode = game:HttpGet(adonisUrl)
+    assert(type(adonisCode) == "string" and #adonisCode > 0, "empty response from Adonis URL")
 end)
 
-if rawCode then
-    local loadedFunc
-    step("Compile source (loadstring)", function()
+if adonisCode then
+    local loadedAdonis
+    step("Compile Adonis Bypass", function()
         local err
-        loadedFunc, err = loadstring(rawCode)
-        assert(loadedFunc, "compile error: " .. tostring(err))
+        loadedAdonis, err = loadstring(adonisCode)
+        assert(loadedAdonis, "compile error: " .. tostring(err))
     end)
 
-    if loadedFunc then
-        step("Execute Adonis", function()
-            local ok, err = pcall(loadedFunc)
+    if loadedAdonis then
+        step("Execute Adonis Bypass", function()
+            local ok, err = pcall(loadedAdonis)
+            assert(ok, tostring(err))
+            task.wait(0.5) -- Даем байпасу немного времени на инициализацию
+        end)
+    end
+end
+
+-- ========================================================
+header("🚀 LOADING FANTASY MAIN HUB")
+-- ========================================================
+
+local fantasyMainUrl = "https://raw.githubusercontent.com/3a6ey/Fantasy/refs/heads/main/Main.lua" 
+local mainCode
+
+step("Download Main Hub", function()
+    mainCode = game:HttpGet(fantasyMainUrl)
+    assert(type(mainCode) == "string" and #mainCode > 0, "empty response from Main URL")
+end)
+
+if mainCode then
+    local loadedMain
+    step("Compile Main Hub", function()
+        local err
+        loadedMain, err = loadstring(mainCode)
+        assert(loadedMain, "compile error: " .. tostring(err))
+    end)
+
+    if loadedMain then
+        step("Execute Main Hub", function()
+            local ok, err = pcall(loadedMain)
             assert(ok, tostring(err))
         end)
     end
